@@ -3,7 +3,8 @@ import { writable } from 'svelte/store';
 export interface FormData {
   plan: 'FREE' | 'PRO' | null;
   address: string;
-  phone: string;
+  phoneDigits: string;
+  phoneFull: string;
   cardNumber: string;
   cardExpiry: string;
   cardCVC: string;
@@ -12,7 +13,8 @@ export interface FormData {
 const initialState: FormData = {
   plan: null,
   address: '',
-  phone: '',
+  phoneDigits: '',
+  phoneFull: '',
   cardNumber: '',
   cardExpiry: '',
   cardCVC: ''

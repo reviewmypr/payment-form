@@ -2,6 +2,7 @@
   import { formStore, currentStep, isCompleted } from '$lib/stores/formStore';
   import { PhoneInput } from '@desource/phone-mask-svelte';
   import '@desource/phone-mask-svelte/assets/lib.css';
+  import type { PMaskPhoneNumber } from '@desource/phone-mask-svelte';
 
   let errors: Record<string, string> = {};
 
@@ -11,7 +12,7 @@
     if (!$formStore.address.trim()) {
       errors.address = 'Address is required';
     }
-    if (!$formStore.phone.trim()) {
+    if (!$formStore.phoneDigits.trim()) {
       errors.phone = 'Phone number is required';
     }
     if (!$formStore.cardNumber.replace(/\s/g, '') || $formStore.cardNumber.replace(/\s/g, '').length < 13) {
@@ -32,6 +33,10 @@
       isCompleted.set(true);
       currentStep.set(2);
     }
+  }
+
+  function handlePhoneChange(value: PMaskPhoneNumber) {
+    formStore.update(data => ({ ...data, phoneDigits: value.digits, phoneFull: value.full }));
   }
 
   function handleCardNumberInput(e: Event) {
@@ -91,8 +96,12 @@
     <div class="form-group">
       <label for="phone">Phone Number</label>
       <PhoneInput
-        id="phone"
-        bind:value={$formStore.phone}
+        bind:value={$formStore.phoneDigits}
+        onchange={handlePhoneChange}
+        theme="auto"
+        showCopy={true}
+        showClear={true}
+        class={`phone-input-field ${errors.phone ? 'phone-input-error' : ''}`}
       />
       {#if errors.phone}
         <span class="error">{errors.phone}</span>
@@ -261,5 +270,24 @@
     &:hover {
       background: var(--accent-hover);
     }
+  }
+
+  /* PhoneInput styling */
+  :global(.phone-input-field .phone-input[data-theme='dark']) {
+    --pi-bg: var(--bg-secondary);
+    --pi-fg: var(--text-primary);
+    --pi-border: var(--border-color);
+    --pi-border-focus: var(--accent-color);
+  }
+
+  :global(.phone-input-field .phone-input) {
+    --pi-bg: var(--bg-secondary);
+    --pi-fg: var(--text-primary);
+    --pi-border: var(--border-color);
+    --pi-border-focus: var(--accent-color);
+  }
+
+  :global(.phone-input-error .phone-input) {
+    --pi-border: var(--error-color);
   }
 </style>
