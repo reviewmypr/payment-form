@@ -67,7 +67,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   }
 
   .fireworks-container {
@@ -173,7 +173,7 @@
 
   .reset-btn {
     background: white;
-    color: #667eea;
+    color: var(--gradient-start);
     padding: 0.75rem 2rem;
     border: none;
     border-radius: 8px;

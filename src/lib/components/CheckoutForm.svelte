@@ -167,7 +167,7 @@
   .back-btn {
     background: none;
     border: none;
-    color: #6366f1;
+    color: var(--accent-color);
     cursor: pointer;
     font-size: 1rem;
     margin-bottom: 1rem;
@@ -180,11 +180,11 @@
   h2 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
-    color: #1a1a1a;
+    color: var(--text-primary);
   }
 
   .subtitle {
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
   }
 
@@ -202,29 +202,31 @@
 
   label {
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--text-primary);
     font-size: 0.95rem;
   }
 
   input {
     padding: 0.75rem;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.2s;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
 
     &:focus {
       outline: none;
-      border-color: #6366f1;
+      border-color: var(--accent-color);
     }
 
     &[aria-invalid="true"] {
-      border-color: #ef4444;
+      border-color: var(--error-color);
     }
   }
 
   .error {
-    color: #ef4444;
+    color: var(--error-color);
     font-size: 0.85rem;
   }
 
@@ -235,6 +237,7 @@
   .card-section h3 {
     margin-bottom: 1rem;
     font-size: 1.1rem;
+    color: var(--text-primary);
   }
 
   .form-row {
@@ -244,7 +247,7 @@
   }
 
   .submit-btn {
-    background: #6366f1;
+    background: var(--accent-color);
     color: white;
     padding: 0.75rem;
     border: none;
@@ -256,7 +259,7 @@
     margin-top: 1rem;
 
     &:hover {
-      background: #4f46e5;
+      background: var(--accent-hover);
     }
   }
 </style>

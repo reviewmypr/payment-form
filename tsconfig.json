@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "module": "nodenext",
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,

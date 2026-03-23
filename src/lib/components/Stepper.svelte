@@ -19,6 +19,7 @@
   .stepper {
     width: 100%;
     min-height: 100vh;
-    background: #f9fafb;
+    background: var(--bg-primary);
+    transition: background-color 0.3s ease;
   }
 </style>

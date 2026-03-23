@@ -16,8 +16,8 @@
     }
   ];
 
-  function selectPlan(planId: 'FREE' | 'PRO') {
-    formStore.update(data => ({ ...data, plan: planId }));
+  function selectPlan(planId: string) {
+    formStore.update(data => ({ ...data, plan: planId as 'FREE' | 'PRO' }));
     currentStep.set(planId === 'FREE' ? 2 : 1);
   }
 </script>
@@ -50,11 +50,11 @@
   h2 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
-    color: #1a1a1a;
+    color: var(--text-primary);
   }
 
   .subtitle {
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 3rem;
   }
 
@@ -67,8 +67,8 @@
   }
 
   .plan-card {
-    background: white;
-    border: 2px solid #e0e0e0;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
     border-radius: 12px;
     padding: 2rem;
     cursor: pointer;
@@ -76,7 +76,7 @@
     text-align: left;
 
     &:hover {
-      border-color: #6366f1;
+      border-color: var(--accent-color);
       box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
       transform: translateY(-4px);
     }
@@ -85,18 +85,18 @@
   h3 {
     font-size: 1.5rem;
     margin: 0 0 0.5rem 0;
-    color: #1a1a1a;
+    color: var(--text-primary);
   }
 
   .price {
     font-size: 2rem;
     font-weight: bold;
-    color: #6366f1;
+    color: var(--accent-color);
     margin: 0.5rem 0;
   }
 
   .description {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.95rem;
     margin: 1rem 0;
   }
@@ -104,7 +104,7 @@
   .cta {
     display: inline-block;
     margin-top: 1rem;
-    color: #6366f1;
+    color: var(--accent-color);
     font-weight: 600;
   }
 </style>
