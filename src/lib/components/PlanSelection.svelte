@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formStore, currentStep } from '$lib/stores/formStore';
+  import { state } from '$lib/stores/formStore.svelte';
 
   const plans = [
     {
@@ -16,9 +16,14 @@
     }
   ];
 
-  function selectPlan(planId: string) {
-    formStore.update(data => ({ ...data, plan: planId as 'FREE' | 'PRO' }));
-    currentStep.set(planId === 'FREE' ? 2 : 1);
+  function selectPlan(planId: 'FREE' | 'PRO') {
+    state.formData.plan = planId;
+    if (planId === 'FREE') {
+      state.isCompleted = true;
+      state.currentStep = 2;
+    } else {
+      state.currentStep = 1;
+    }
   }
 </script>
 
@@ -30,7 +35,7 @@
     {#each plans as plan}
       <button 
         class="plan-card" 
-        on:click={() => selectPlan(plan.id)}
+        onclick={() => selectPlan(plan.id as 'FREE' | 'PRO')}
       >
         <h3>{plan.name}</h3>
         <p class="price">{plan.price}</p>

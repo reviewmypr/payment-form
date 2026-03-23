@@ -1,38 +1,46 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { resetForm } from '$lib/stores/formStore.svelte';
 
-  let fireworks: Array<{ id: number; x: number; y: number; duration: number }> = [];
-  let nextId = 0;
+  let fireworks = $state<Array<{ id: number; x: number; y: number; startTime: number }>>([]);
+  let nextId = $state(0);
 
   onMount(() => {
     // Generate fireworks on mount
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       setTimeout(() => {
-        fireworks = [
-          ...fireworks,
-          {
-            id: nextId++,
-            x: Math.random() * 100,
-            y: Math.random() * 60 + 20,
-            duration: 0.6
-          }
-        ];
-      }, i * 200);
+        fireworks.push({
+          id: nextId++,
+          x: Math.random() * 100,
+          y: Math.random() * 60 + 20,
+          startTime: Date.now()
+        });
+        fireworks = fireworks; // Trigger reactivity
+      }, i * 150);
     }
 
-    // Remove completed fireworks
-    const cleanup = setInterval(() => {
-      fireworks = fireworks.filter(
-        f => Date.now() - f.id < f.duration * 1000
-      );
-    }, 100);
-
-    return () => clearInterval(cleanup);
+    // Cleanup function
+    return () => {
+      // Cleanup on component destroy
+    };
   });
 
   function handleReset() {
-    window.location.reload();
+    resetForm();
+    window.location.href = '/';
   }
+
+  function isFireworkActive(startTime: number): boolean {
+    return Date.now() - startTime < 1200; // 1.2 seconds
+  }
+
+  $effect(() => {
+    // Remove completed fireworks
+    const active = fireworks.filter(f => isFireworkActive(f.startTime));
+    if (active.length !== fireworks.length) {
+      fireworks = active;
+    }
+  });
 </script>
 
 <div class="completion-container">
@@ -40,10 +48,10 @@
     {#each fireworks as firework (firework.id)}
       <div 
         class="firework"
-        style="--x: {firework.x}%; --y: {firework.y}%; --duration: {firework.duration}s"
+        style="--x: {firework.x}%; --y: {firework.y}%;"
       >
         {#each [0, 1, 2, 3, 4] as i}
-          <span class="spark" style="--delay: {i * 0.1}s"></span>
+          <span class="spark spark-{i}"></span>
         {/each}
       </div>
     {/each}
@@ -55,7 +63,7 @@
     <p class="message">Your payment has been processed successfully.</p>
     <p class="details">Thank you for choosing our service. Get ready to experience amazing features!</p>
     
-    <button class="reset-btn" on:click={handleReset}>Start Over</button>
+    <button class="reset-btn" onclick={handleReset}>Start Over</button>
   </div>
 </div>
 
@@ -71,12 +79,13 @@
   }
 
   .fireworks-container {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
+    z-index: 1;
   }
 
   .firework {
@@ -93,34 +102,38 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    animation: burst var(--duration) ease-out forwards;
     left: 0;
     top: 0;
+  }
 
-    &:nth-child(1) {
-      background: #ffd700;
-      --delay: 0s;
-    }
+  .spark-0 {
+    background: #ffd700;
+    animation: burst 1.2s ease-out forwards;
+    --angle: 0deg;
+  }
 
-    &:nth-child(2) {
-      background: #ff69b4;
-      --delay: 0.1s;
-    }
+  .spark-1 {
+    background: #ff69b4;
+    animation: burst 1.2s ease-out 0.1s forwards;
+    --angle: 72deg;
+  }
 
-    &:nth-child(3) {
-      background: #00ff00;
-      --delay: 0.2s;
-    }
+  .spark-2 {
+    background: #00ff00;
+    animation: burst 1.2s ease-out 0.2s forwards;
+    --angle: 144deg;
+  }
 
-    &:nth-child(4) {
-      background: #00bfff;
-      --delay: 0.3s;
-    }
+  .spark-3 {
+    background: #00bfff;
+    animation: burst 1.2s ease-out 0.3s forwards;
+    --angle: 216deg;
+  }
 
-    &:nth-child(5) {
-      background: #ff1493;
-      --delay: 0.4s;
-    }
+  .spark-4 {
+    background: #ff1493;
+    animation: burst 1.2s ease-out 0.4s forwards;
+    --angle: 288deg;
   }
 
   @keyframes burst {
@@ -130,8 +143,8 @@
     }
     100% {
       transform: translate(
-        calc(cos(var(--angle)) * 100px),
-        calc(sin(var(--angle)) * 100px)
+        calc(cos(var(--angle)) * 120px),
+        calc(sin(var(--angle)) * 120px)
       );
       opacity: 0;
     }

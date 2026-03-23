@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { currentStep, isCompleted } from '$lib/stores/formStore';
+  import { state } from '$lib/stores/formStore.svelte';
   import PlanSelection from './PlanSelection.svelte';
   import CheckoutForm from './CheckoutForm.svelte';
   import CompletionView from './CompletionView.svelte';
 </script>
 
 <div class="stepper">
-  {#if $isCompleted}
+  {#if state.isCompleted}
     <CompletionView />
-  {:else if $currentStep === 0}
+  {:else if state.currentStep === 0}
     <PlanSelection />
-  {:else if $currentStep === 1}
+  {:else if state.currentStep === 1}
     <CheckoutForm />
   {/if}
 </div>

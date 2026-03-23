@@ -1,27 +1,27 @@
 <script lang="ts">
-  import { formStore, currentStep, isCompleted } from '$lib/stores/formStore';
+  import { state as formState, resetForm } from '$lib/stores/formStore.svelte';
   import { PhoneInput } from '@desource/phone-mask-svelte';
   import '@desource/phone-mask-svelte/assets/lib.css';
   import type { PMaskPhoneNumber } from '@desource/phone-mask-svelte';
 
-  let errors: Record<string, string> = {};
+  let errors: Record<string, string> = $state({});
 
   function validateForm(): boolean {
     errors = {};
     
-    if (!$formStore.address.trim()) {
+    if (!formState.formData.address.trim()) {
       errors.address = 'Address is required';
     }
-    if (!$formStore.phoneDigits.trim()) {
+    if (!formState.formData.phone.trim()) {
       errors.phone = 'Phone number is required';
     }
-    if (!$formStore.cardNumber.replace(/\s/g, '') || $formStore.cardNumber.replace(/\s/g, '').length < 13) {
+    if (!formState.formData.cardNumber.replace(/\s/g, '') || formState.formData.cardNumber.replace(/\s/g, '').length < 13) {
       errors.cardNumber = 'Valid card number is required';
     }
-    if (!$formStore.cardExpiry.trim()) {
+    if (!formState.formData.cardExpiry.trim()) {
       errors.cardExpiry = 'Expiry date is required';
     }
-    if (!$formStore.cardCVC.trim()) {
+    if (!formState.formData.cardCVC.trim()) {
       errors.cardCVC = 'CVC is required';
     }
 
@@ -30,23 +30,22 @@
 
   function handleSubmit() {
     if (validateForm()) {
-      isCompleted.set(true);
-      currentStep.set(2);
+      formState.isCompleted = true;
+      formState.currentStep = 2;
     }
   }
 
   function handlePhoneChange(value: PMaskPhoneNumber) {
-    formStore.update(data => ({ ...data, phoneDigits: value.digits, phoneFull: value.full }));
+    formState.formData.phone = value.digits;
   }
 
   function handleCardNumberInput(e: Event) {
     const input = e.target as HTMLInputElement;
     let value = input.value.replace(/\s/g, '');
     
-    // Add spaces every 4 digits
     value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
     
-    formStore.update(data => ({ ...data, cardNumber: value }));
+    formState.formData.cardNumber = value;
   }
 
   function handleExpiryInput(e: Event) {
@@ -57,35 +56,35 @@
       value = value.slice(0, 2) + '/' + value.slice(2, 4);
     }
     
-    formStore.update(data => ({ ...data, cardExpiry: value }));
+    formState.formData.cardExpiry = value;
   }
 
   function handleCVCInput(e: Event) {
     const input = e.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, '').slice(0, 4);
     
-    formStore.update(data => ({ ...data, cardCVC: value }));
+    formState.formData.cardCVC = value;
   }
 
   function goBack() {
-    currentStep.set(0);
+    formState.currentStep = 0;
   }
 </script>
 
 <div class="checkout-form">
-  <button class="back-btn" on:click={goBack}>← Back</button>
+  <button class="back-btn" onclick={goBack}>← Back</button>
   
   <h2>Complete Your Details</h2>
   <p class="subtitle">Secure payment information for PRO plan</p>
 
-  <form on:submit|preventDefault={handleSubmit}>
+  <form onsubmit={handleSubmit}>
     <div class="form-group">
       <label for="address">Address</label>
       <input
         id="address"
         type="text"
         placeholder="123 Main St, City, State, ZIP"
-        bind:value={$formStore.address}
+        bind:value={formState.formData.address}
         aria-invalid={!!errors.address}
       />
       {#if errors.address}
@@ -96,7 +95,7 @@
     <div class="form-group">
       <label for="phone">Phone Number</label>
       <PhoneInput
-        bind:value={$formStore.phoneDigits}
+        bind:value={formState.formData.phone}
         onchange={handlePhoneChange}
         theme="auto"
         showCopy={true}
@@ -118,8 +117,8 @@
           type="text"
           placeholder="1234 5678 9012 3456"
           maxlength="19"
-          value={$formStore.cardNumber}
-          on:input={handleCardNumberInput}
+          value={formState.formData.cardNumber}
+          oninput={handleCardNumberInput}
           aria-invalid={!!errors.cardNumber}
         />
         {#if errors.cardNumber}
@@ -135,8 +134,8 @@
             type="text"
             placeholder="12/25"
             maxlength="5"
-            value={$formStore.cardExpiry}
-            on:input={handleExpiryInput}
+            value={formState.formData.cardExpiry}
+            oninput={handleExpiryInput}
             aria-invalid={!!errors.cardExpiry}
           />
           {#if errors.cardExpiry}
@@ -151,8 +150,8 @@
             type="text"
             placeholder="123"
             maxlength="4"
-            value={$formStore.cardCVC}
-            on:input={handleCVCInput}
+            value={formState.formData.cardCVC}
+            oninput={handleCVCInput}
             aria-invalid={!!errors.cardCVC}
           />
           {#if errors.cardCVC}
