@@ -1,6 +1,7 @@
 <script lang="ts">
   import { formStore, currentStep, isCompleted } from '$lib/stores/formStore';
-  import PhoneMask from '@desource/phone-mask-svelte';
+  import { PhoneInput } from '@desource/phone-mask-svelte';
+  import '@desource/phone-mask-svelte/assets/lib.css';
 
   let errors: Record<string, string> = {};
 
@@ -89,12 +90,9 @@
 
     <div class="form-group">
       <label for="phone">Phone Number</label>
-      <PhoneMask
+      <PhoneInput
         id="phone"
-        mask="+1 (###) ###-####"
-        placeholder="+1 (555) 000-0000"
         bind:value={$formStore.phone}
-        aria-invalid={!!errors.phone}
       />
       {#if errors.phone}
         <span class="error">{errors.phone}</span>
